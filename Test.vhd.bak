@@ -1,0 +1,27 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+
+ENTITY Test IS
+PORT ( OP1, OP2, OP3, OP4 : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
+		 OP  : OUT STD_LOGIC_VECTOR(15 DOWNTO 0));
+END Test;
+
+ARCHITECTURE Behavior OF Test IS
+BEGIN
+	OP(0) <= OP1(3);
+	OP(1) <= OP1(2);
+	OP(2) <= OP1(1);
+	OP(3) <= OP1(0);	
+	OP(4) <= OP2(3);
+	OP(5) <= OP2(2);
+	OP(6) <= OP2(1);
+	OP(7) <= OP2(0);	
+	OP(8) <= OP3(3);
+	OP(9) <= OP3(2);
+	OP(10) <= OP3(1);
+	OP(11) <= OP3(0);	
+	OP(12) <= OP4(3);
+	OP(13) <= OP4(2);
+	OP(14) <= OP4(1);
+	OP(15) <= OP4(0);		
+END Behavior;

@@ -1,0 +1,68 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_UNSIGNED.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+ENTITY ALU1 IS
+
+PORT (Clock : IN STD_LOGIC; 							--CLOCK SIGNAL
+		A ,B : IN UNSIGNED(7 DOWNTO 0);				--8 BIT INPUT FROM LATCHES
+		OP: IN UNSIGNED(15 downto 0);					--16 BIT SELECTOR for OPERATION FROM DECODER
+		Neg: OUT STD_LOGIC;								--NEGATIVE RESULT
+		R1: OUT UNSIGNED(3 DOWNTO 0);					--lower 4bits of 8bits Result
+		R2: OUT UNSIGNED(3 DOWNTO 0));				--higher 4bits of 8bits Result
+END ALU1;
+
+ARCHITECTURE Behaviour OF ALU1 IS
+SIGNAL Reg1, Reg2, Result: UNSIGNED(7 DOWNTO 0) := (OTHERS => '0');
+SIGNAL Reg4: UNSIGNED(0 TO 7);
+BEGIN
+
+Reg1 <= A;
+Reg2 <= B;
+PROCESS (Clock, OP)
+	BEGIN
+		IF (rising_edge(Clock)) THEN
+	    CASE OP IS
+			WHEN "0000000000000001" =>
+				Neg <= '0';          				--ADDITION
+				Result <= Reg2 + Reg1;
+			WHEN "0000000000000010"  => 			--SUBTRACTION
+				IF(Reg1 >= Reg2) THEN
+					result <= Reg1 + (not(Reg2) +1);
+					neg <= '0';
+				ELSE
+					result <= Reg1 + (not(Reg2) +1);
+					neg <= '1';
+				END IF;
+			WHEN "0000000000000100" =>				--INVERSE
+				Neg <= '0';
+				Result <= NOT(Reg1);
+			WHEN "0000000000001000" =>				--NAND
+				Neg <= '0';
+				Result <= (Reg1 NAND Reg2);
+			WHEN "0000000000010000" =>				--NOR
+				Neg <= '0';
+				Result <= (Reg1 NOR Reg2);
+			WHEN "0000000000100000" =>				--AND
+				Neg <= '0';
+				Result <= (Reg1 AND Reg2);
+			WHEN "0000000001000000" =>				--XOR
+				Neg <= '0';
+				Result <= (Reg1 XOR Reg2);
+			WHEN "0000000010000000" =>				--OR
+				Neg <= '0';
+				Result <= (Reg1 OR Reg2);
+			WHEN "0000000100000000" =>				--XNOR
+				Neg <= '0';
+				Result <= (Reg1 XNOR Reg2);
+			WHEN OTHERS =>-- Don't care
+				result <= "00000000";
+				neg <= '0';
+		END CASE;
+	END IF;
+END PROCESS;
+R1 <= Result(3 DOWNTO 0);
+R2 <= Result(7 DOWNTO 4);
+
+END Behaviour;
